@@ -1,13 +1,15 @@
+import 'package:bmi_calculator/screens/results_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'constants.dart';
-import 'icon_content.dart';
-import 'reusable_card.dart';
-import 'custom_stepper.dart';
-
-enum Gender { male, female, none }
+import '../calculator_view_model.dart';
+import '../constants.dart';
+import '../gender.dart';
+import '../components/icon_content.dart';
+import '../components/reusable_card.dart';
+import '../components/bottom_button.dart';
+import '../components/custom_stepper.dart';
 
 class InputPage extends StatefulWidget {
   const InputPage({Key? key}) : super(key: key);
@@ -17,16 +19,13 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
-  Gender selectedGender = Gender.none;
-  int height = 183;
-  int weight = 74;
-  int age = 19;
+  var viewModel = CalculatorViewModel();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BMI CALCULATOR'),
+        title: const Center(child: Text("BMI Calculator")),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: kElementPadding),
@@ -41,10 +40,10 @@ class _InputPageState extends State<InputPage> {
                     child: ReusableCard(
                       onTapped: () {
                         setState(() {
-                          selectedGender = Gender.male;
+                          viewModel.selectedGender = Gender.male;
                         });
                       },
-                      color: selectedGender == Gender.male
+                      color: viewModel.selectedGender == Gender.male
                           ? kActiveCardColor
                           : kInactiveCardColor,
                       cardChild: const IconContent(
@@ -60,10 +59,10 @@ class _InputPageState extends State<InputPage> {
                     child: ReusableCard(
                       onTapped: () {
                         setState(() {
-                          selectedGender = Gender.female;
+                          viewModel.selectedGender = Gender.female;
                         });
                       },
-                      color: selectedGender == Gender.female
+                      color: viewModel.selectedGender == Gender.female
                           ? kActiveCardColor
                           : kInactiveCardColor,
                       cardChild: const IconContent(
@@ -93,7 +92,7 @@ class _InputPageState extends State<InputPage> {
                       textBaseline: TextBaseline.alphabetic,
                       children: [
                         Text(
-                          height.toString(),
+                          viewModel.height.toString(),
                           style: kProminentTextStyle,
                         ),
                         const Text(
@@ -116,10 +115,10 @@ class _InputPageState extends State<InputPage> {
                         ),
                       ),
                       child: Slider(
-                        value: height.toDouble(),
+                        value: viewModel.height.toDouble(),
                         onChanged: (double newValue) {
                           setState(() {
-                            height = newValue.round();
+                            viewModel.height = newValue.round();
                           });
                         },
                         min: kMinSliderValue,
@@ -140,17 +139,17 @@ class _InputPageState extends State<InputPage> {
                       color: kCardBackground,
                       cardChild: CustomStepper(
                           label: "Weight",
-                          value: weight,
+                          value: viewModel.weight,
                           minValue: kMinWeight,
                           maxValue: kMaxWeight,
                           onDecrement: () {
                             setState(() {
-                              weight -= 1;
+                              viewModel.weight -= 1;
                             });
                           },
                           onIncrement: () {
                             setState(() {
-                              weight += 1;
+                              viewModel.weight += 1;
                             });
                           }),
                     ),
@@ -163,17 +162,17 @@ class _InputPageState extends State<InputPage> {
                       color: kCardBackground,
                       cardChild: CustomStepper(
                         label: "Age",
-                        value: age,
+                        value: viewModel.age,
                         minValue: kMinAge,
                         maxValue: kMaxAge,
                         onDecrement: () {
                           setState(() {
-                            age -= 1;
+                            viewModel.age -= 1;
                           });
                         },
                         onIncrement: () {
                           setState(() {
-                            age += 1;
+                            viewModel.age += 1;
                           });
                         },
                       ),
@@ -183,23 +182,21 @@ class _InputPageState extends State<InputPage> {
               ),
             ),
             // !: Calculate
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kElementPadding),
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: kBottomContainerColor,
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(kElementPadding))),
-                margin: const EdgeInsets.only(top: kElementPadding),
-                width: double.infinity,
-                height: kBottomContainerHeight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Calculate",
+            BottomButton(
+              label: "Calculate".toUpperCase(),
+              onPressed: () {
+                viewModel.calculateBMI();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ResultsPage(
+                      bmi: viewModel.bmi,
+                      bmiResult: viewModel.bmiResult,
+                      bmiInterpretation: viewModel.bmiInterpretation,
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ],
         ),
@@ -207,4 +204,3 @@ class _InputPageState extends State<InputPage> {
     );
   }
 }
-

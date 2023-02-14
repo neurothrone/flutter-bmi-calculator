@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
-import 'input_page.dart';
+import 'screens/input_page.dart';
 
-void main() => runApp(BMICalculator());
+void main() => runApp(const BMICalculator());
 
 class BMICalculator extends StatelessWidget {
   const BMICalculator({super.key});
@@ -14,12 +14,12 @@ class BMICalculator extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(useMaterial3: false).copyWith(
         primaryColor: kCardBackground,
-        appBarTheme: AppBarTheme(
-          backgroundColor: kCardBackground,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: kPrimaryBackgroundColor,
         ),
         scaffoldBackgroundColor: kPrimaryBackgroundColor,
       ),
-      home: InputPage(),
+      home: const InputPage(),
     );
   }
 }
